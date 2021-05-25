@@ -18,7 +18,7 @@ from chia.types.blockchain_format.sized_bytes import bytes32
 from chia.util.api_decorators import api_request, peer_required
 from chia.util.ints import uint8, uint32, uint64
 from chia.wallet.derive_keys import master_sk_to_local_sk
-
+from chia.util.byte_types import hexstr_to_bytes
 
 class HarvesterAPI:
     harvester: Harvester
@@ -44,6 +44,50 @@ class HarvesterAPI:
         if len(self.harvester.provers) == 0:
             self.harvester.log.warning("Not farming any plots on this harvester. Check your configuration.")
             return None
+
+    @api_request
+    @peer_required
+    async def post_plot_check(
+      self, post_plot_check: harvester_protocol.PostPlotCheck, peer: WSChiaConnection
+    ):
+      self.harvester.log.info(f"received plot check on harvester, challenge {post_plot_check.challenge_hash} , plots {len(self.harvester.provers)}")
+      responseList: List[Tuple[bytes32, ProofOfSpace]] = []
+      challenge = hexstr_to_bytes(post_plot_check.challenge_hash)
+      for try_plot_filename, plot_info in self.harvester.provers.items():
+        plot_id = plot_info.prover.get_id()
+
+        quality_strings = plot_info.prover.get_qualities_for_challenge(challenge)
+
+        for index, quality_str in enumerate(quality_strings):
+          proof_xs = plot_info.prover.get_full_proof(challenge, index)
+
+          (
+              pool_public_key_or_puzzle_hash,
+              farmer_public_key,
+              local_master_sk,
+          ) = parse_plot_info(plot_info.prover.get_memo())
+          local_sk = master_sk_to_local_sk(local_master_sk)
+          local_pk = local_sk.get_g1()
+          plot_public_key = ProofOfSpace.generate_plot_public_key(local_pk, farmer_public_key)
+          responseList.append(
+            (
+              quality_str,
+              local_pk,
+              farmer_public_key,
+              ProofOfSpace(
+                  challenge,
+                  plot_info.pool_public_key,
+                  plot_info.pool_contract_puzzle_hash,
+                  plot_public_key,
+                  uint8(plot_info.prover.get_size()),
+                  proof_xs,
+              ),
+            )
+          )
+      data = harvester_protocol.RespondPlotCheck(responseList)
+      msg = make_msg(ProtocolMessageTypes.respond_plot_check, data)
+      await peer.send_message(msg)
+
 
     @peer_required
     @api_request
