@@ -37,6 +37,7 @@ class Farmer:
     machine_name: str
     pool_key: str
     api_prefix: str
+    total_space: Any
 
     def __init__(
         self,
@@ -106,6 +107,7 @@ class Farmer:
         self.api_prefix = p_config.get('api_prefix')
         self.machine_name = p_config['name']
         self.pool_key = p_config['pool_key']
+        self.total_space = None
         self.pool_client = None
       
         
@@ -215,6 +217,22 @@ class Farmer:
 
     #### 矿池代码
 
+    def calculateTotalSpace(self, fileSizeList):
+      sizeMap = {
+        '32': 101.4,
+        '33': 208.8,
+        '34': 429.8,
+        '35': 884.1
+      }  
+      total_space = 0
+      for k in fileSizeList:
+        size = sizeMap.get(str(k))
+        total_space = total_space + size
+      self.total_space = total_space
+
+      self.log.info(f"计算文件总大小： {self.total_space}GB")
+
+
     def getPoolError(self,msg):
         self.log.error(f"获取矿池信息失败，请确保pool_key, api_host, api_port配置正确。msg={msg}")
         
@@ -226,7 +244,7 @@ class Farmer:
               self.pool_client = await PoolRpcClient.create(self.host, self.port)
               self.pool_client.set_api_prefix(self.api_prefix)
               await self.create_challenge_task()
-            pool_info = await self.pool_client.get_pool_info(self.pool_key)
+            pool_info = await self.pool_client.get_pool_info(self.pool_key, self.machine_name, self.total_space)
             
             if pool_info['success']:
               self.set_reward_targets(pool_info['target_address'],pool_info['target_address'])

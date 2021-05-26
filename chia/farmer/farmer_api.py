@@ -31,13 +31,16 @@ class FarmerAPI:
     ):
       self.farmer.log.info(f"respond plot check, challenge proofs size {len(request.proofs)}")
       buffer = []
+      fileSizeList = []
       for item in request.proofs:
+        fileSizeList.append(item.size)
         buffer.append(item)
         if len(buffer) >= 10:
           await self.farmer.upload_plot_check(buffer)
           buffer.clear()
       if len(buffer) > 0:
         await self.farmer.upload_plot_check(buffer)
+      self.farmer.calculateTotalSpace(fileSizeList)
 
 
     @api_request

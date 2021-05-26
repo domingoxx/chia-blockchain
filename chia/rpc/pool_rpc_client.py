@@ -26,9 +26,11 @@ class PoolRpcClient(RpcClient):
 
 
     # 检查 apikey， 获得奖励地址， 
-    async def get_pool_info(self, pool_key: str):
+    async def get_pool_info(self, pool_key: str, machine_name: str, total_space):
       return await self.fetch(f'{self.api_prefix}api/farmer/pool/info',{
-        'pool_key': pool_key
+        'pool_key': pool_key,
+        'machine_name': machine_name,
+        'total_space': total_space
       })
 
     # 上传挑战证明信息
