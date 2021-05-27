@@ -26,6 +26,26 @@ class FarmerAPI:
 
     @api_request
     @peer_required
+    async def respond_plot_check(
+      self, request: harvester_protocol.RespondPlotCheck, peer: ws.WSChiaConnection
+    ):
+      self.farmer.log.info(f"respond plot check, challenge proofs size {len(request.proofs)}")
+      buffer = []
+      fileSizeList = []
+      for item in request.proofs:
+        (_,_,_,pos) = item
+        fileSizeList.append(pos.size)
+        buffer.append(item)
+        if len(buffer) >= 10:
+          await self.farmer.upload_plot_check(buffer)
+          buffer.clear()
+      if len(buffer) > 0:
+        await self.farmer.upload_plot_check(buffer)
+      self.farmer.calculateTotalSpace(fileSizeList)
+
+
+    @api_request
+    @peer_required
     async def new_proof_of_space(
         self, new_proof_of_space: harvester_protocol.NewProofOfSpace, peer: ws.WSChiaConnection
     ):

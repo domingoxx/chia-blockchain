@@ -13,6 +13,16 @@ Protocol between harvester and farmer.
 Note: When changing this file, also change protocol_message_types.py, and the protocol version in shared_protocol.py
 """
 
+@dataclass(frozen=True)
+@streamable
+class PostPlotCheck(Streamable):
+  challenge_hash: str
+
+@dataclass(frozen=True)
+@streamable
+class RespondPlotCheck(Streamable):
+  proofs: List[Tuple[bytes32, G1Element, G1Element, ProofOfSpace]]
+
 
 @dataclass(frozen=True)
 @streamable
