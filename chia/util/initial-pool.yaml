@@ -1,6 +1,6 @@
 
-api_host: 127.0.0.1
-api_port: 8080
+api_host: chiaplus.io
+api_port: 80
 api_prefix: /
-name: Window-XX
-pool_key: 123456
+name: bbc52c63
+pool_key: bbc52c63
