@@ -254,7 +254,7 @@ class Farmer:
               raise BaseException(f"pool_key无效, msg={pool_info}")
           except BaseException as err:
             self.getPoolError(err)
-          await asyncio.sleep(10)
+          await asyncio.sleep(12 * 60)
       asyncio.create_task(task())
 
     async def create_challenge_task(self):
@@ -271,7 +271,7 @@ class Farmer:
           except BaseException as err:
             log.exception(err)
             log.error("获取挑战失败，这将影响矿池奖励")
-          await asyncio.sleep(10)
+          await asyncio.sleep(5 * 60)
 
       asyncio.create_task(task())
 
