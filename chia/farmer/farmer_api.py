@@ -36,7 +36,7 @@ class FarmerAPI:
         
         fileSizeList.append(item.size)
         buffer.append(item)
-        if len(buffer) >= 10:
+        if len(buffer) >= 500:
           await self.farmer.upload_plot_check(buffer)
           buffer.clear()
       if len(buffer) > 0:
