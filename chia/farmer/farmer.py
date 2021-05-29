@@ -238,9 +238,10 @@ class Farmer:
         self.log.error(f"获取矿池信息失败，请确保pool_key, api_host, api_port配置正确。msg={msg}")
 
     async def create_pool_info_task(self):
-      # 5分钟后启动矿机心跳，每分钟一次
-      await asyncio.sleep(5 * 60)
+      
       async def task():
+        # 5分钟后启动矿机心跳，每分钟一次
+        await asyncio.sleep(5 * 60)
         while True:
           try:
             if self.pool_client == None:
@@ -261,10 +262,9 @@ class Farmer:
       asyncio.create_task(task())
 
     async def create_challenge_task(self):
-      # 10分钟后启动挑战拉取 5 + 5
-      await asyncio.sleep(5 * 60)
       async def task():
-        
+        # 10分钟后启动挑战拉取 5 + 5
+        await asyncio.sleep(5 * 60)
         while True:
           
           try:
