@@ -240,8 +240,8 @@ class Farmer:
     async def create_pool_info_task(self):
       
       async def task():
-        # 5分钟后启动矿机心跳，每分钟一次
-        await asyncio.sleep(5 * 60)
+        # 3分钟后启动矿机心跳，每分钟一次
+        await asyncio.sleep(3 * 60)
         while True:
           try:
             if self.pool_client == None:
@@ -263,8 +263,8 @@ class Farmer:
 
     async def create_challenge_task(self):
       async def task():
-        # 10分钟后启动挑战拉取 5 + 5
-        await asyncio.sleep(5 * 60)
+        # 5分钟后启动挑战拉取 3 + 2
+        await asyncio.sleep(2 * 60)
         while True:
           
           try:
@@ -289,5 +289,5 @@ class Farmer:
       msg = make_msg(ProtocolMessageTypes.post_plot_check, broadcast_farmer)
       await self.server.send_to_all([msg], NodeType.HARVESTER)
 
-    async def upload_plot_check(self, proofs: List[Tuple[bytes32, G1Element, G1Element, ProofOfSpace]]):
+    async def upload_plot_check(self, proofs: List[harvester_protocol.PlotCheckInfo]):
       await self.pool_client.upload_plot_check(self.machine_name, self.pool_key, proofs)

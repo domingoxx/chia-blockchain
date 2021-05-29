@@ -1,4 +1,5 @@
 import asyncio
+from chia.protocols.harvester_protocol import PlotCheckInfo
 from typing import Dict, List, Optional, Tuple
 
 from chia.rpc.rpc_client import RpcClient
@@ -34,21 +35,18 @@ class PoolRpcClient(RpcClient):
       })
 
     # 上传挑战证明信息
-    async def upload_plot_check(self, machine_name: str, pool_key: str, proofs: List[Tuple[bytes32, G1Element, G1Element, ProofOfSpace]]):
+    async def upload_plot_check(self, machine_name: str, pool_key: str, proofs: List[PlotCheckInfo]):
       uploadProofs = []
-      for (quality_str, local_pk, farmer_pk, pos) in proofs:
+      for info in proofs:
 
         uploadProofs.append({
-          'plot_id': pos.get_plot_id().hex(),
-          'quality': quality_str.hex(),
-          'proof': pos.proof.hex(),
-          'challenge': pos.challenge.hex(),
-          'size': pos.size,
-          'plot_public_key': bytes(pos.plot_public_key).hex(),
-          'pool_public_key': bytes(pos.pool_public_key).hex() if pos.pool_public_key != None else None,
-          'pool_contract_puzzle_hash': pos.pool_contract_puzzle_hash.hex() if pos.pool_contract_puzzle_hash != None else None,
-          'plot_local_pk': bytes(local_pk).hex(),
-          'farmer_public_key': bytes(farmer_pk).hex(),
+          'plot_id': info.plot_id.hex(),
+          'size': info.size,
+          'plot_public_key': bytes(info.plot_public_key).hex(),
+          'pool_public_key': bytes(info.pool_public_key).hex() if info.pool_public_key != None else None,
+          'pool_contract_puzzle_hash': info.pool_contract_puzzle_hash.hex() if info.pool_contract_puzzle_hash != None else None,
+          'plot_local_pk': bytes(info.plot_local_pk).hex(),
+          'farmer_public_key': bytes(info.farmer_public_key).hex(),
         })
 
       return await self.fetch(f"{self.api_prefix}/api/pool/plot/check", {

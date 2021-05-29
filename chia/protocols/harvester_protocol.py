@@ -20,8 +20,20 @@ class PostPlotCheck(Streamable):
 
 @dataclass(frozen=True)
 @streamable
+class PlotCheckInfo(Streamable):
+  plot_id:bytes32
+  plot_local_pk: G1Element
+  farmer_public_key: G1Element
+  pool_public_key: G1Element
+  pool_contract_puzzle_hash: bytes32
+  plot_public_key:G1Element
+  size: uint8
+
+@dataclass(frozen=True)
+@streamable
 class RespondPlotCheck(Streamable):
-  proofs: List[Tuple[bytes32, G1Element, G1Element, ProofOfSpace]]
+  proofs: List[PlotCheckInfo]
+
 
 
 @dataclass(frozen=True)

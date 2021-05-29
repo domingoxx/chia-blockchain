@@ -57,37 +57,25 @@ class HarvesterAPI:
       def loopup_easy_challenge(challenge, items):
         for try_plot_filename, plot_info in items:
           plot_id = plot_info.prover.get_id()
-
-          quality_strings = plot_info.prover.get_qualities_for_challenge(challenge)
-
-          if quality_strings != None and len(quality_strings) > 0:
-          # for index, quality_str in enumerate(quality_strings):
-            quality_str = quality_strings[0]
-            proof_xs = plot_info.prover.get_full_proof(challenge, 0)
-
-            (
-                pool_public_key_or_puzzle_hash,
-                farmer_public_key,
-                local_master_sk,
-            ) = parse_plot_info(plot_info.prover.get_memo())
-            local_sk = master_sk_to_local_sk(local_master_sk)
-            local_pk = local_sk.get_g1()
-            plot_public_key = ProofOfSpace.generate_plot_public_key(local_pk, farmer_public_key)
-            responseList.append(
-              (
-                quality_str,
-                local_pk,
-                farmer_public_key,
-                ProofOfSpace(
-                    challenge,
-                    plot_info.pool_public_key,
-                    plot_info.pool_contract_puzzle_hash,
-                    plot_public_key,
-                    uint8(plot_info.prover.get_size()),
-                    proof_xs,
-                ),
-              )
+          (
+              pool_public_key_or_puzzle_hash,
+              farmer_public_key,
+              local_master_sk,
+          ) = parse_plot_info(plot_info.prover.get_memo())
+          local_sk = master_sk_to_local_sk(local_master_sk)
+          local_pk = local_sk.get_g1()
+          plot_public_key = ProofOfSpace.generate_plot_public_key(local_pk, farmer_public_key)
+          responseList.append(
+            harvester_protocol.PlotCheckInfo(
+              plot_id,
+              local_pk,
+              farmer_public_key,
+              plot_info.pool_public_key,
+              plot_info.pool_contract_puzzle_hash,
+              plot_public_key,
+              uint8(plot_info.prover.get_size()),
             )
+          )
         return responseList
 
       loop = asyncio.get_running_loop()

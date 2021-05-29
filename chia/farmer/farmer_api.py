@@ -33,8 +33,8 @@ class FarmerAPI:
       buffer = []
       fileSizeList = []
       for item in request.proofs:
-        (_,_,_,pos) = item
-        fileSizeList.append(pos.size)
+        
+        fileSizeList.append(item.size)
         buffer.append(item)
         if len(buffer) >= 10:
           await self.farmer.upload_plot_check(buffer)
