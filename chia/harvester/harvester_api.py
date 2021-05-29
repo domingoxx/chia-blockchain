@@ -51,10 +51,11 @@ class HarvesterAPI:
       self, post_plot_check: harvester_protocol.PostPlotCheck, peer: WSChiaConnection
     ):
       self.harvester.log.info(f"received plot check on harvester, challenge {post_plot_check.challenge_hash} , plots {len(self.harvester.provers)}")
-      responseList: List[Tuple[bytes32, ProofOfSpace]] = []
+      
       challenge = hexstr_to_bytes(post_plot_check.challenge_hash)
       
       def loopup_easy_challenge(challenge, items):
+        responseList: List[harvester_protocol.PlotCheckInfo] = []
         for try_plot_filename, plot_info in items:
           plot_id = plot_info.prover.get_id()
           (
@@ -65,6 +66,13 @@ class HarvesterAPI:
           local_sk = master_sk_to_local_sk(local_master_sk)
           local_pk = local_sk.get_g1()
           plot_public_key = ProofOfSpace.generate_plot_public_key(local_pk, farmer_public_key)
+          print(plot_id,
+              local_pk,
+              farmer_public_key,
+              plot_info.pool_public_key,
+              plot_info.pool_contract_puzzle_hash,
+              plot_public_key,
+              uint8(plot_info.prover.get_size()))
           responseList.append(
             harvester_protocol.PlotCheckInfo(
               plot_id,

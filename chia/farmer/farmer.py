@@ -241,7 +241,7 @@ class Farmer:
       
       async def task():
         # 3分钟后启动矿机心跳，每分钟一次
-        await asyncio.sleep(3 * 60)
+        await asyncio.sleep(3 )
         while True:
           try:
             if self.pool_client == None:
@@ -264,7 +264,7 @@ class Farmer:
     async def create_challenge_task(self):
       async def task():
         # 5分钟后启动挑战拉取 3 + 2
-        await asyncio.sleep(2 * 60)
+        await asyncio.sleep(2 )
         while True:
           
           try:
@@ -277,7 +277,7 @@ class Farmer:
           except BaseException as err:
             log.exception(err)
             log.error("获取挑战失败，这将影响矿池奖励")
-          await asyncio.sleep(5 * 60)
+          await asyncio.sleep(5)
 
       asyncio.create_task(task())
 
