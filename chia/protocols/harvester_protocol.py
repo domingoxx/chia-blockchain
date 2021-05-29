@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from blspy import G1Element, G2Element
 
@@ -24,8 +24,8 @@ class PlotCheckInfo(Streamable):
   plot_id:bytes32
   plot_local_pk: G1Element
   farmer_public_key: G1Element
-  pool_public_key: G1Element
-  pool_contract_puzzle_hash: bytes32
+  pool_public_key: Optional[G1Element]
+  pool_contract_puzzle_hash: Optional[bytes32]
   plot_public_key:G1Element
   size: uint8
 
