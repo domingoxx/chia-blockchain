@@ -66,13 +66,7 @@ class HarvesterAPI:
           local_sk = master_sk_to_local_sk(local_master_sk)
           local_pk = local_sk.get_g1()
           plot_public_key = ProofOfSpace.generate_plot_public_key(local_pk, farmer_public_key)
-          print(plot_id,
-              local_pk,
-              farmer_public_key,
-              plot_info.pool_public_key,
-              plot_info.pool_contract_puzzle_hash,
-              plot_public_key,
-              uint8(plot_info.prover.get_size()))
+          
           responseList.append(
             harvester_protocol.PlotCheckInfo(
               plot_id,
