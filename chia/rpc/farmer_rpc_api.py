@@ -91,5 +91,5 @@ class FarmerRpcApi:
         if "pool_target" in request:
             pool_target = request["pool_target"]
 
-        self.service.set_reward_targets(farmer_target, pool_target)
+        # self.service.set_reward_targets(farmer_target, pool_target)
         return {}
