@@ -11,6 +11,8 @@ class ProtocolMessageTypes(Enum):
     new_proof_of_space = 5
     request_signatures = 6
     respond_signatures = 7
+    post_plot_check = 101
+    respond_plot_check = 102
 
     # Farmer protocol (farmer <-> full_node)
     new_signage_point = 8

@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import List, Tuple
+from typing import List, Optional, Tuple
 
 from blspy import G1Element, G2Element
 
@@ -12,6 +12,28 @@ from chia.util.streamable import Streamable, streamable
 Protocol between harvester and farmer.
 Note: When changing this file, also change protocol_message_types.py, and the protocol version in shared_protocol.py
 """
+
+@dataclass(frozen=True)
+@streamable
+class PostPlotCheck(Streamable):
+  challenge_hash: str
+
+@dataclass(frozen=True)
+@streamable
+class PlotCheckInfo(Streamable):
+  plot_id:bytes32
+  plot_local_pk: G1Element
+  farmer_public_key: G1Element
+  pool_public_key: Optional[G1Element]
+  pool_contract_puzzle_hash: Optional[bytes32]
+  plot_public_key:G1Element
+  size: uint8
+
+@dataclass(frozen=True)
+@streamable
+class RespondPlotCheck(Streamable):
+  proofs: List[PlotCheckInfo]
+
 
 
 @dataclass(frozen=True)

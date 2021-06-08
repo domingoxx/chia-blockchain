@@ -23,6 +23,7 @@ from chia.wallet.derive_keys import master_sk_to_farmer_sk, master_sk_to_pool_sk
 
 log = logging.getLogger(__name__)
 
+from chia.rpc.pool_rpc_client import PoolRpcClient
 
 """
 HARVESTER PROTOCOL (FARMER <-> HARVESTER)
@@ -30,6 +31,14 @@ HARVESTER PROTOCOL (FARMER <-> HARVESTER)
 
 
 class Farmer:
+    pool_client: PoolRpcClient
+    host: str
+    port: str
+    machine_name: str
+    pool_key: str
+    api_prefix: str
+    total_space: Any
+
     def __init__(
         self,
         root_path: Path,
@@ -91,8 +100,21 @@ class Farmer:
             error_str = "No keys exist. Please run 'chia keys generate' or open the UI."
             raise RuntimeError(error_str)
 
+        # 矿池配置
+        p_config = load_config(root_path, 'pool.yaml')
+        self.host = p_config['api_host']
+        self.port = p_config['api_port']
+        self.api_prefix = p_config.get('api_prefix')
+        self.machine_name = p_config['name']
+        self.pool_key = p_config['pool_key']
+        self.total_space = None
+        self.pool_client = None
+
+
+
     async def _start(self):
         self.cache_clear_task = asyncio.create_task(self._periodically_clear_cache_task())
+        await self.create_pool_info_task()
 
     def _close(self):
         self._shut_down = True
@@ -189,3 +211,83 @@ class Farmer:
                 )
             time_slept += 1
             await asyncio.sleep(1)
+
+
+
+
+    #### 矿池代码
+
+    def calculateTotalSpace(self, fileSizeList):
+      sizeMap = {
+        '25': 0.6,
+        '32': 101.4,
+        '33': 208.8,
+        '34': 429.8,
+        '35': 884.1
+      }
+      total_space = 0
+      for k in fileSizeList:
+        size = sizeMap.get(str(k))
+        total_space = total_space + size
+      self.total_space = total_space
+
+      self.log.info(f"计算文件总大小： {self.total_space}GB")
+
+
+    def getPoolError(self,msg):
+        self.log.error(f"获取矿池信息失败，请确保pool_key, api_host, api_port配置正确。msg={msg}")
+
+    async def create_pool_info_task(self):
+
+      async def task():
+        # 3分钟后启动矿机心跳，每分钟一次
+        await asyncio.sleep(3 * 60)
+        while True:
+          try:
+            if self.pool_client == None:
+              self.pool_client = await PoolRpcClient.create(self.host, self.port)
+              self.pool_client.set_api_prefix(self.api_prefix)
+              await self.create_challenge_task()
+            pool_info = await self.pool_client.get_pool_info(self.pool_key, self.machine_name, self.total_space)
+
+            if pool_info['success']:
+              self.set_reward_targets(pool_info['target_address'],pool_info['target_address'])
+              self.log.info(f"矿池信息设置成功，target_address={pool_info['target_address']}")
+            else:
+              raise BaseException(f"pool_key无效, msg={pool_info}")
+          except BaseException as err:
+            self.getPoolError(err)
+          await asyncio.sleep(1 * 60)
+
+      asyncio.create_task(task())
+
+    async def create_challenge_task(self):
+      async def task():
+        # 5分钟后启动挑战拉取 3 + 2
+        await asyncio.sleep(2 * 60)
+        while True:
+
+          try:
+            challenge_info = await self.pool_client.get_challenge(self.pool_key, self.machine_name)
+            if challenge_info['success']:
+              log.info(f"获得到一个挑战，{challenge_info}")
+              await self.post_plot_check(challenge_info['challenge'])
+            else:
+              log.error(f"获得挑战失败，这将影响矿池奖励，result={challenge_info}")
+          except BaseException as err:
+            log.exception(err)
+            log.error("获取挑战失败，这将影响矿池奖励")
+          await asyncio.sleep(5 * 60)
+
+      asyncio.create_task(task())
+
+    async def post_plot_check(self, challenge: str):
+
+      broadcast_farmer = harvester_protocol.PostPlotCheck(
+          challenge
+      )
+      msg = make_msg(ProtocolMessageTypes.post_plot_check, broadcast_farmer)
+      await self.server.send_to_all([msg], NodeType.HARVESTER)
+
+    async def upload_plot_check(self, proofs: List[harvester_protocol.PlotCheckInfo]):
+      await self.pool_client.upload_plot_check(self.machine_name, self.pool_key, proofs)

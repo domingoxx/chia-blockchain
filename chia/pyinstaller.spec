@@ -103,6 +103,7 @@ datas = []
 
 datas.append((f"{ROOT}/chia/util/english.txt", "chia/util"))
 datas.append((f"{ROOT}/chia/util/initial-config.yaml", "chia/util"))
+datas.append((f"{ROOT}/chia/util/initial-pool.yaml", "chia/util"))
 datas.append((f"{ROOT}/chia/wallet/puzzles/*.hex", "chia/wallet/puzzles"))
 datas.append((f"{ROOT}/chia/ssl/*", "chia/ssl"))
 datas.append((f"{ROOT}/mozilla-ca/*", "mozilla-ca"))
