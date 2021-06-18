@@ -64,12 +64,12 @@ class PoolRpcClient(RpcClient):
           'challenge':pos.challenge.hex(),
           'pool_public_key':bytes(pos.pool_public_key).hex(),
           'pool_contract_puzzle_hash': pos.pool_contract_puzzle_hash.hex() if pos.pool_contract_puzzle_hash != None else None,
-          'plot_public_key': bytes(pos.pool_public_key).hex() if pos.pool_public_key != None else None,
+          'plot_public_key': bytes(pos.plot_public_key).hex() if pos.plot_public_key != None else None,
           'size':pos.size,
           'proof':pos.proof.hex(),
         })
 
-      return await self.fetch(f"{self.api_prefix}/api/pool/poof/upload", {
+      return await self.fetch(f"{self.api_prefix}/api/pool/plot/proof/upload", {
         'machine_name': machine_name,
         'pool_key': pool_key,
         'origin_challenge': proof.challenge_hash.hex(),
