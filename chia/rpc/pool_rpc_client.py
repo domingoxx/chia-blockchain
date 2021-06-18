@@ -1,5 +1,5 @@
 import asyncio
-from chia.protocols.harvester_protocol import PlotCheckInfo
+from chia.protocols.harvester_protocol import PlotCheckInfo, UploadProofOfSpace
 from typing import Dict, List, Optional, Tuple
 
 from chia.rpc.rpc_client import RpcClient
@@ -56,3 +56,22 @@ class PoolRpcClient(RpcClient):
         
       })
       
+    async def upload_proof_of_space(self, proof: UploadProofOfSpace):
+      proofs = []
+      for (quality_strings, pos) in proof.proofs:
+        proofs.append({
+          'quality_strings': quality_strings,
+          'challenge':pos.challenge,
+          'pool_public_key':pos.pool_public_key,
+          'pool_contract_puzzle_hash':pos.pool_contract_puzzle_hash,
+          'plot_public_key':pos.plot_public_key,
+          'size':pos.size,
+          'proof':pos.proof,
+        })
+
+      return await self.fetch(f"{self.api_prefix}/api/pool/poof/upload", {
+        'origin_challenge': proof.challenge_hash,
+        'origin_sp_hash': proof.sp_hash,
+        'signage_point_index': proof.signage_point_index,
+        'proofs': proofs
+      })

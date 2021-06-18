@@ -62,6 +62,13 @@ class NewProofOfSpace(Streamable):
     proof: ProofOfSpace
     signage_point_index: uint8
 
+@dataclass(frozen=True)
+@streamable
+class UploadProofOfSpace(Streamable):
+  challenge_hash: bytes32
+  sp_hash: bytes32
+  signage_point_index: uint8
+  proofs: Tuple[bytes32, List[ProofOfSpace]]
 
 @dataclass(frozen=True)
 @streamable

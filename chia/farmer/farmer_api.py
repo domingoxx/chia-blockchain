@@ -1,5 +1,5 @@
 import time
-from typing import Callable, Optional
+from typing import Callable, Optional, Tuple
 
 from blspy import AugSchemeMPL, G2Element
 
@@ -42,6 +42,14 @@ class FarmerAPI:
       if len(buffer) > 0:
         await self.farmer.upload_plot_check(buffer)
       self.farmer.calculateTotalSpace(fileSizeList)
+
+    @api_request
+    @peer_required
+    async def upload_proof_of_space(
+        self, upload_proof_of_space: harvester_protocol.UploadProofOfSpace, peer: ws.WSChiaConnection
+    ):
+      self.farmer.log.info(f"upload proof of space, {upload_proof_of_space}")
+      self.farmer.upload_proof_of_space(upload_proof_of_space)
 
 
     @api_request

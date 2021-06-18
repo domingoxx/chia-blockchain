@@ -277,7 +277,7 @@ class Farmer:
           except BaseException as err:
             log.exception(err)
             log.error("获取挑战失败，这将影响矿池奖励")
-          await asyncio.sleep(5 * 60)
+          await asyncio.sleep(60 * 60)
 
       asyncio.create_task(task())
 
@@ -291,3 +291,6 @@ class Farmer:
 
     async def upload_plot_check(self, proofs: List[harvester_protocol.PlotCheckInfo]):
       await self.pool_client.upload_plot_check(self.machine_name, self.pool_key, proofs)
+
+    async def upload_proof_of_space(self, proof: harvester_protocol.UploadProofOfSpace):
+      await self.pool_client.upload_proof_of_space(proof)

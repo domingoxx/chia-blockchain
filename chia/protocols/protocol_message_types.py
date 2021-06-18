@@ -13,6 +13,7 @@ class ProtocolMessageTypes(Enum):
     respond_signatures = 7
     post_plot_check = 101
     respond_plot_check = 102
+    upload_proof_of_space = 103
 
     # Farmer protocol (farmer <-> full_node)
     new_signage_point = 8
