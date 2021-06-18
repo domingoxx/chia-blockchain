@@ -200,7 +200,7 @@ class HarvesterAPI:
 
         async def lookup_challenge(
             filename: Path, plot_info: PlotInfo
-        ) -> Tuple[Path, List[harvester_protocol.NewProofOfSpace],List[harvester_protocol.NewProofOfSpace]]:
+        ) -> Tuple[Path, List[harvester_protocol.NewProofOfSpace],List[Tuple[bytes32, harvester_protocol.NewProofOfSpace]]]:
             # Executes a DiskProverLookup in a thread pool, and returns responses
             all_responses: List[Tuple[bytes32, harvester_protocol.NewProofOfSpace]] = []
             good_responses: List[harvester_protocol.NewProofOfSpace] = []
@@ -262,8 +262,8 @@ class HarvesterAPI:
                 total_proofs_found += 1
                 msg = make_msg(ProtocolMessageTypes.new_proof_of_space, response)
                 await peer.send_message(msg)
-            for response in all_list:
-              upload_pos_list.append(response)
+            for (qs, pos) in all_list:
+              upload_pos_list.append((qs, pos))
 
         # 发送通过初步过滤的“时空证明”给farmer
         uploadPos = harvester_protocol.UploadProofOfSpace(
