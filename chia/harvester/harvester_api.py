@@ -219,7 +219,7 @@ class HarvesterAPI:
               )
               if is_good_proof:
                 good_responses.append(newPOS)
-              all_responses.append((quality_str, newPOS))
+              all_responses.append((quality_str, proof_of_space))
             return filename, good_responses, all_responses
 
         awaitables = []
