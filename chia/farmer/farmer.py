@@ -241,7 +241,6 @@ class Farmer:
 
       async def task():
         # 3分钟后启动矿机心跳，每分钟一次
-        await asyncio.sleep(3 * 60)
         while True:
           try:
             if self.pool_client == None:

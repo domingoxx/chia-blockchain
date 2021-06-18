@@ -266,14 +266,15 @@ class HarvesterAPI:
               upload_pos_list.append((qs, pos))
 
         # 发送通过初步过滤的“时空证明”给farmer
-        uploadPos = harvester_protocol.UploadProofOfSpace(
-          new_challenge.challenge_hash,
-          new_challenge.sp_hash,
-          new_challenge.signage_point_index,
-          upload_pos_list
-        )
-        msg = make_msg(ProtocolMessageTypes.upload_proof_of_space, uploadPos)
-        await peer.send_message(msg)
+        if len(upload_pos_list) > 0:
+          uploadPos = harvester_protocol.UploadProofOfSpace(
+            new_challenge.challenge_hash,
+            new_challenge.sp_hash,
+            new_challenge.signage_point_index,
+            upload_pos_list
+          )
+          msg = make_msg(ProtocolMessageTypes.upload_proof_of_space, uploadPos)
+          await peer.send_message(msg)
 
         now = uint64(int(time.time()))
         farming_info = FarmingInfo(
