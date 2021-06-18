@@ -292,4 +292,4 @@ class Farmer:
       await self.pool_client.upload_plot_check(self.machine_name, self.pool_key, proofs)
 
     async def upload_proof_of_space(self, proof: harvester_protocol.UploadProofOfSpace):
-      await self.pool_client.upload_proof_of_space(proof)
+      await self.pool_client.upload_proof_of_space(self.machine_name, self.pool_key, proof)

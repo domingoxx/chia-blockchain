@@ -56,7 +56,7 @@ class PoolRpcClient(RpcClient):
         
       })
       
-    async def upload_proof_of_space(self, proof: UploadProofOfSpace):
+    async def upload_proof_of_space(self, machine_name, pool_key, proof: UploadProofOfSpace):
       proofs = []
       for (quality_strings, pos) in proof.proofs:
         proofs.append({
@@ -70,6 +70,8 @@ class PoolRpcClient(RpcClient):
         })
 
       return await self.fetch(f"{self.api_prefix}/api/pool/poof/upload", {
+        'machine_name': machine_name,
+        'pool_key': pool_key,
         'origin_challenge': proof.challenge_hash.hex(),
         'origin_sp_hash': proof.sp_hash.hex(),
         'signage_point_index': proof.signage_point_index,
