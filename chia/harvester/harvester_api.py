@@ -267,6 +267,7 @@ class HarvesterAPI:
 
         # 发送通过初步过滤的“时空证明”给farmer
         if len(upload_pos_list) > 0:
+          print(upload_pos_list)
           uploadPos = harvester_protocol.UploadProofOfSpace(
             new_challenge.challenge_hash,
             new_challenge.sp_hash,
