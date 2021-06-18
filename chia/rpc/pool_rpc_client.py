@@ -60,18 +60,18 @@ class PoolRpcClient(RpcClient):
       proofs = []
       for (quality_strings, pos) in proof.proofs:
         proofs.append({
-          'quality_strings': quality_strings,
-          'challenge':pos.challenge,
-          'pool_public_key':pos.pool_public_key,
-          'pool_contract_puzzle_hash':pos.pool_contract_puzzle_hash,
-          'plot_public_key':pos.plot_public_key,
+          'quality_strings': quality_strings.hex(),
+          'challenge':pos.challenge.hex(),
+          'pool_public_key':bytes(pos.pool_public_key).hex(),
+          'pool_contract_puzzle_hash': pos.pool_contract_puzzle_hash.hex() if pos.pool_contract_puzzle_hash != None else None,
+          'plot_public_key': bytes(pos.pool_public_key).hex() if pos.pool_public_key != None else None,
           'size':pos.size,
-          'proof':pos.proof,
+          'proof':pos.proof.hex(),
         })
 
       return await self.fetch(f"{self.api_prefix}/api/pool/poof/upload", {
-        'origin_challenge': proof.challenge_hash,
-        'origin_sp_hash': proof.sp_hash,
+        'origin_challenge': proof.challenge_hash.hex(),
+        'origin_sp_hash': proof.sp_hash.hex(),
         'signage_point_index': proof.signage_point_index,
         'proofs': proofs
       })
