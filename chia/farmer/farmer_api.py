@@ -49,7 +49,7 @@ class FarmerAPI:
         self, upload_proof_of_space: harvester_protocol.UploadProofOfSpace, peer: ws.WSChiaConnection
     ):
       self.farmer.log.info(f"upload proof of space, {upload_proof_of_space}")
-      self.farmer.upload_proof_of_space(upload_proof_of_space)
+      await self.farmer.upload_proof_of_space(upload_proof_of_space)
 
 
     @api_request
