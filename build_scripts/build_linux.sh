@@ -77,4 +77,8 @@ fi
 mv $DIR_NAME ../build_scripts/dist/
 cd ../build_scripts || exit
 
-ls ../build_scripts/dist/
+cd ../build_scripts/dist/
+
+zip -r -q -o chia-blockchain-linux-x64-${CHIA_INSTALLER_VERSION}.zip chia-blockchain-linux-x64/
+
+ls ./*.zip
