@@ -318,6 +318,8 @@ def chia_init(root_path: Path):
 
     print(f"Chia directory {root_path}")
     if root_path.is_dir() and Path(root_path / "config" / "config.yaml").exists():
+        if not Path(root_path / "config" / "pool.yaml").exists():
+          create_default_chia_config(root_path, ["pool.yaml"])
         # This is reached if CHIA_ROOT is set, or if user has run chia init twice
         # before a new update.
         check_keys(root_path)
