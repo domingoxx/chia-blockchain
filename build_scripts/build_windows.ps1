@@ -36,7 +36,7 @@ pip install setuptools_scm
 Write-Output "   ---"
 Write-Output "Get CHIA_INSTALLER_VERSION"
 # The environment variable CHIA_INSTALLER_VERSION needs to be defined
-$env:CHIA_INSTALLER_VERSION = 'xchpool-1.1.7'
+$env:CHIA_INSTALLER_VERSION = '1.1.7'
 
 if (-not (Test-Path env:CHIA_INSTALLER_VERSION)) {
   $env:CHIA_INSTALLER_VERSION = '0.0.0'
@@ -67,7 +67,7 @@ Write-Output "   ---"
 Write-Output "Use pyinstaller to create chia .exe's"
 Write-Output "   ---"
 $SPEC_FILE = (python.exe -c 'import chia; print(chia.PYINSTALLER_SPEC_PATH)') -join "`n"
-pyinstaller --log-level INFO $SPEC_FILE
+pyinstaller --no-confirm --log-level INFO $SPEC_FILE
 
 Write-Output "   ---"
 Write-Output "Copy chia executables to chia-blockchain-gui\"
@@ -103,7 +103,7 @@ editbin.exe /STACK:8000000 daemon\chia.exe
 Write-Output "   ---"
 
 $packageVersion = "$env:CHIA_INSTALLER_VERSION"
-$packageName = "Chia-$packageVersion"
+$packageName = "Chia-xchpool-$packageVersion"
 
 Write-Output "packageName is $packageName"
 
