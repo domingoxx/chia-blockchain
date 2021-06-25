@@ -25,9 +25,9 @@ else
 Write-Output "   ---"
 Write-Output "Create venv - python3.7 or 3.8 is required in PATH"
 Write-Output "   ---"
-python -m venv venv
+python.exe -m venv venv
 . .\venv\Scripts\Activate.ps1
-python -m pip install --upgrade pip
+python.exe -m pip install --upgrade pip
 pip install wheel pep517
 pip install pywin32
 pip install pyinstaller==4.2
@@ -66,7 +66,7 @@ pip install --no-index --find-links=.\win_build\ chia-blockchain
 Write-Output "   ---"
 Write-Output "Use pyinstaller to create chia .exe's"
 Write-Output "   ---"
-$SPEC_FILE = (python -c 'import chia; print(chia.PYINSTALLER_SPEC_PATH)') -join "`n"
+$SPEC_FILE = (python.exe -c 'import chia; print(chia.PYINSTALLER_SPEC_PATH)') -join "`n"
 pyinstaller --log-level INFO $SPEC_FILE
 
 Write-Output "   ---"
