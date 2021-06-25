@@ -22,7 +22,7 @@ if [ "$(uname)" = "Linux" ]; then
 	if type apt-get; then
 		# Debian/Ubuntu
 		UBUNTU=true
-		sudo apt-get install -y npm nodejs libxss1
+		sudo apt-get install -y nodejs libxss1
 	elif type yum &&  [ ! -f "/etc/redhat-release" ] && [ ! -f "/etc/centos-release" ] && [ ! -f /etc/rocky-release ]; then
 		# AMZN 2
 		echo "Installing on Amazon Linux 2."
