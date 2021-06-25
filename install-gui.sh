@@ -89,7 +89,7 @@ if [ ! "$CI" ]; then
 		echo "Building the GUI with branch $SUBMODULE_BRANCH"
 		echo ""
 	fi
-  npm install -g yarn
+  sudo npm install -g yarn
 	yarn install
 	yarn audit fix || true
 	yarn run build
