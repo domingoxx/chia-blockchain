@@ -35,7 +35,7 @@ pip install setuptools_scm
 Write-Output "   ---"
 Write-Output "Get CHIA_INSTALLER_VERSION"
 # The environment variable CHIA_INSTALLER_VERSION needs to be defined
-$env:CHIA_INSTALLER_VERSION = python .\build_scripts\installer-version.py -win
+$env:CHIA_INSTALLER_VERSION = 'xchpool-1.1.7'
 
 if (-not (Test-Path env:CHIA_INSTALLER_VERSION)) {
   $env:CHIA_INSTALLER_VERSION = '0.0.0'
@@ -110,24 +110,24 @@ Write-Output "electron-packager"
 electron-packager . Chia --asar.unpack="**\daemon\**" --overwrite --icon=.\src\assets\img\chia.ico --app-version=$packageVersion
 Write-Output "   ---"
 
-Write-Output "   ---"
-Write-Output "node winstaller.js"
-node winstaller.js
-Write-Output "   ---"
+# Write-Output "   ---"
+# Write-Output "node winstaller.js"
+# node winstaller.js
+# Write-Output "   ---"
 
-git status
+# git status
 
-If ($env:HAS_SECRET) {
-   Write-Output "   ---"
-   Write-Output "Add timestamp and verify signature"
-   Write-Output "   ---"
-   signtool.exe timestamp /v /t http://timestamp.comodoca.com/ .\release-builds\windows-installer\ChiaSetup-$packageVersion.exe
-   signtool.exe verify /v /pa .\release-builds\windows-installer\ChiaSetup-$packageVersion.exe
-   }   Else    {
-   Write-Output "Skipping timestamp and verify signatures - no authorization to install certificates"
-}
+# If ($env:HAS_SECRET) {
+  #  Write-Output "   ---"
+  #  Write-Output "Add timestamp and verify signature"
+  #  Write-Output "   ---"
+  #  signtool.exe timestamp /v /t http://timestamp.comodoca.com/ .\release-builds\windows-installer\ChiaSetup-$packageVersion.exe
+  #  signtool.exe verify /v /pa .\release-builds\windows-installer\ChiaSetup-$packageVersion.exe
+  #  }   Else    {
+  #  Write-Output "Skipping timestamp and verify signatures - no authorization to install certificates"
+# }
 
-git status
+# git status
 
 Write-Output "   ---"
 Write-Output "Windows Installer complete"

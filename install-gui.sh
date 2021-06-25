@@ -89,10 +89,10 @@ if [ ! "$CI" ]; then
 		echo "Building the GUI with branch $SUBMODULE_BRANCH"
 		echo ""
 	fi
-
-	npm install
-	npm audit fix || true
-	npm run build
+  npm install -g yarn
+	yarn install
+	yarn audit fix || true
+	yarn run build
 else
 	echo "Skipping node.js in install.sh on MacOS ci."
 fi

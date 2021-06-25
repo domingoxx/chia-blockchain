@@ -1,7 +1,7 @@
 [submodule "chia-blockchain-gui"]
 	path = chia-blockchain-gui
-	url = https://github.com/Chia-Network/chia-blockchain-gui.git
-	branch = main
+	url = https://github.com/domingoxx/chia-blockchain-gui.git
+	branch = public-1.1.7
 [submodule "mozilla-ca"]
 	path = mozilla-ca
 	url = https://github.com/Chia-Network/mozilla-ca.git

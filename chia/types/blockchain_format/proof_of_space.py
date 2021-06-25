@@ -50,7 +50,7 @@ class ProofOfSpace(Streamable):
         new_challenge: bytes32 = ProofOfSpace.calculate_pos_challenge(plot_id, original_challenge_hash, signage_point)
 
         if new_challenge != self.challenge:
-            return None
+          return None
 
         if not ProofOfSpace.passes_plot_filter(constants, plot_id, original_challenge_hash, signage_point):
             return None

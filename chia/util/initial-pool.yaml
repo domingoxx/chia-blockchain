@@ -1,6 +1,6 @@
 
-api_host: chiaplus.io
+api_host: farmer.xchpool.io
 api_port: 80
 api_prefix: /
-name: bbc52c63
-pool_key: bbc52c63
+name: default1
+pool_key: pool_key

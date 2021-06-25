@@ -1,5 +1,13 @@
 #!/bin/bash
 
+# 修改package.json，删除 "electron-osx-sign": "github:electron/electron-osx-sign#master",
+# 修改src/components/about/About.tsx 
+# <title>About {productName}</title>
+# <StyledTitle>{productName} {version}</StyledTitle>
+# 修改CHIA_INSTALLER_VERSION版本号
+
+ 
+
 if [ ! "$1" ]; then
   echo "This script requires either amd64 of arm64 as an argument"
 	exit 1
@@ -16,7 +24,7 @@ pip install setuptools_scm
 # The environment variable CHIA_INSTALLER_VERSION needs to be defined
 # If the env variable NOTARIZE and the username and password variables are
 # set, this will attempt to Notarize the signed DMG
-CHIA_INSTALLER_VERSION=$(python installer-version.py)
+CHIA_INSTALLER_VERSION="xchpool-1.1.7"
 
 if [ ! "$CHIA_INSTALLER_VERSION" ]; then
 	echo "WARNING: No environment variable CHIA_INSTALLER_VERSION set. Using 0.0.0."
@@ -25,9 +33,9 @@ fi
 echo "Chia Installer Version is: $CHIA_INSTALLER_VERSION"
 
 echo "Installing npm and electron packagers"
-npm install electron-packager -g
-npm install electron-installer-debian -g
-npm install electron-installer-redhat -g
+yarn global add electron-packager
+yarn global add electron-installer-debian
+yarn global add electron-installer-redhat
 
 echo "Create dist/"
 rm -rf dist
@@ -48,9 +56,9 @@ cd .. || exit
 cd chia-blockchain-gui || exit
 
 echo "npm build"
-npm install
-npm audit fix
-npm run build
+yarn install
+yarn audit fix
+yarn run build
 LAST_EXIT_CODE=$?
 if [ "$LAST_EXIT_CODE" -ne 0 ]; then
 	echo >&2 "npm run build failed!"
