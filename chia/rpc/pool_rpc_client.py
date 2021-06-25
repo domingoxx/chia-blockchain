@@ -67,6 +67,7 @@ class PoolRpcClient(RpcClient):
           'plot_public_key': bytes(pos.plot_public_key).hex() if pos.plot_public_key != None else None,
           'size':pos.size,
           'proof':pos.proof.hex(),
+          'plot_id': pos.get_plot_id().hex()
         })
 
       return await self.fetch(f"{self.api_prefix}/api/pool/plot/proof/upload", {
