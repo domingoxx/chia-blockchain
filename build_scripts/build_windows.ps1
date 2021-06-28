@@ -79,7 +79,7 @@ Write-Output "Copy chia executables to chia-blockchain-gui\"
 Write-Output "   ---"
 Remove-Item "..\chia-blockchain-gui\daemon" -Force  -Recurse -ErrorAction SilentlyContinue
 Remove-Item "..\chia-blockchain-gui\build" -Force  -Recurse -ErrorAction SilentlyContinue
-Remove-Item "..\chia-blockchain-gui\windows-x86" -Force  -Recurse -ErrorAction SilentlyContinue
+Remove-Item "..\chia-blockchain-gui\chia-blockchain-win32-x64" -Force  -Recurse -ErrorAction SilentlyContinue
 Copy-Item "dist\daemon" -Destination "..\chia-blockchain-gui\" -Recurse
 Set-Location -Path "..\chia-blockchain-gui" -PassThru
 
