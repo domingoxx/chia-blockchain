@@ -2,7 +2,12 @@
 
 $ErrorActionPreference = "Stop"
 
-rm -r -fo build_scripts\win_build
+
+Remove-Item ".\venv" -Force  -Recurse -ErrorAction SilentlyContinue
+Remove-Item ".\build" -Force  -Recurse -ErrorAction SilentlyContinue
+Remove-Item ".\build_scripts\dist" -Force  -Recurse -ErrorAction SilentlyContinue
+Remove-Item ".\build_scripts\build" -Force  -Recurse -ErrorAction SilentlyContinue
+Remove-Item ".\build_scripts\win_build" -Force  -Recurse -ErrorAction SilentlyContinue
 mkdir build_scripts\win_build
 Set-Location -Path ".\build_scripts\win_build" -PassThru
 
@@ -72,7 +77,9 @@ pyinstaller --no-confirm --log-level INFO $SPEC_FILE
 Write-Output "   ---"
 Write-Output "Copy chia executables to chia-blockchain-gui\"
 Write-Output "   ---"
-rm -r -fo ..\chia-blockchain-gui\daemon
+Remove-Item "..\chia-blockchain-gui\daemon" -Force  -Recurse -ErrorAction SilentlyContinue
+Remove-Item "..\chia-blockchain-gui\build" -Force  -Recurse -ErrorAction SilentlyContinue
+Remove-Item "..\chia-blockchain-gui\windows-x86" -Force  -Recurse -ErrorAction SilentlyContinue
 Copy-Item "dist\daemon" -Destination "..\chia-blockchain-gui\" -Recurse
 Set-Location -Path "..\chia-blockchain-gui" -PassThru
 
