@@ -72,7 +72,7 @@ Write-Output "   ---"
 Write-Output "Use pyinstaller to create chia .exe's"
 Write-Output "   ---"
 $SPEC_FILE = (python.exe -c 'import chia; print(chia.PYINSTALLER_SPEC_PATH)') -join "`n"
-pyinstaller --no-confirm --log-level INFO $SPEC_FILE
+pyinstaller --noconfirm --log-level INFO $SPEC_FILE
 
 Write-Output "   ---"
 Write-Output "Copy chia executables to chia-blockchain-gui\"
