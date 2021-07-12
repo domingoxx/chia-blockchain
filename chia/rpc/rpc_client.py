@@ -26,10 +26,10 @@ class RpcClient:
     ssl_context: Optional[SSLContext]
 
     @classmethod
-    async def create(cls, self_hostname: str, port: uint16, root_path=None, net_config=None):
+    async def create(cls, self_hostname: str, port: uint16, root_path=None, net_config=None, timeout=None):
         self = cls()
 
-        self.session = aiohttp.ClientSession()
+        self.session = aiohttp.ClientSession(timeout=timeout)
         if root_path == None or net_config == None:
           self.url = f"http://{self_hostname}:{str(port)}/"
           self.ssl_context = None

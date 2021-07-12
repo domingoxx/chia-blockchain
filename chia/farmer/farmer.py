@@ -3,6 +3,7 @@ import logging
 import time
 from pathlib import Path
 from typing import Any, Callable, Dict, List, Optional, Tuple
+import aiohttp
 
 from blspy import G1Element
 
@@ -245,7 +246,7 @@ class Farmer:
         while True:
           try:
             if self.pool_client == None:
-              self.pool_client = await PoolRpcClient.create(self.host, self.port)
+              self.pool_client = await PoolRpcClient.create(self.host, self.port, timeout=aiohttp.ClientTimeout(total=15))
               self.pool_client.set_api_prefix(self.api_prefix)
               await self.create_challenge_task()
             pool_info = await self.pool_client.get_pool_info(self.pool_key, self.machine_name, self.total_space)
@@ -257,6 +258,8 @@ class Farmer:
               raise BaseException(f"pool_key无效, msg={pool_info}")
           except BaseException as err:
             self.getPoolError(err)
+            await asyncio.sleep(5)
+            continue
           await asyncio.sleep(1 * 60)
 
       asyncio.create_task(task())
@@ -277,6 +280,8 @@ class Farmer:
           except BaseException as err:
             log.exception(err)
             log.error("获取挑战失败，这将影响矿池奖励")
+            await asyncio.sleep(5)
+            continue
           await asyncio.sleep(5 * 60)
 
       asyncio.create_task(task())
@@ -290,4 +295,12 @@ class Farmer:
       await self.server.send_to_all([msg], NodeType.HARVESTER)
 
     async def upload_plot_check(self, proofs: List[harvester_protocol.PlotCheckInfo]):
-      await self.pool_client.upload_plot_check(self.machine_name, self.pool_key, proofs)
+      count = 0
+      while count < 10:
+        try:
+          await self.pool_client.upload_plot_check(self.machine_name, self.pool_key, proofs)
+          return
+        except BaseException as err:
+          log.exception(err)
+          await asyncio.sleep(5)
+        count = count + 1
