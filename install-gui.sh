@@ -22,7 +22,7 @@ if [ "$(uname)" = "Linux" ]; then
 	if type apt-get; then
 		# Debian/Ubuntu
 		UBUNTU=true
-		sudo apt-get install -y npm nodejs libxss1
+		sudo apt-get install -y nodejs libxss1
 	elif type yum &&  [ ! -f "/etc/redhat-release" ] && [ ! -f "/etc/centos-release" ] && [ ! -f /etc/rocky-release ]; then
 		# AMZN 2
 		echo "Installing on Amazon Linux 2."
@@ -89,10 +89,10 @@ if [ ! "$CI" ]; then
 		echo "Building the GUI with branch $SUBMODULE_BRANCH"
 		echo ""
 	fi
-
-	npm install
-	npm audit fix || true
-	npm run build
+  sudo npm install -g yarn
+	yarn install
+	yarn audit fix || true
+	yarn run build
 else
 	echo "Skipping node.js in install.sh on MacOS ci."
 fi
