@@ -32,13 +32,14 @@ class RpcServer:
         self.service_name = service_name
         self.root_path = root_path
         self.net_config = net_config
-        self.crt_path = root_path / net_config["daemon_ssl"]["private_crt"]
-        self.key_path = root_path / net_config["daemon_ssl"]["private_key"]
-        self.ca_cert_path = root_path / net_config["private_ssl_ca"]["crt"]
-        self.ca_key_path = root_path / net_config["private_ssl_ca"]["key"]
-        self.ssl_context = ssl_context_for_server(
-            self.ca_cert_path, self.ca_key_path, self.crt_path, self.key_path, log=self.log
-        )
+        if self.root_path != None and self.net_config != None:
+          self.crt_path = root_path / net_config["daemon_ssl"]["private_crt"]
+          self.key_path = root_path / net_config["daemon_ssl"]["private_key"]
+          self.ca_cert_path = root_path / net_config["private_ssl_ca"]["crt"]
+          self.ca_key_path = root_path / net_config["private_ssl_ca"]["key"]
+          self.ssl_context = ssl_context_for_server(self.ca_cert_path, self.ca_key_path, self.crt_path, self.key_path)
+        else:
+          self.ssl_context = None
 
     async def stop(self):
         self.shut_down = True
